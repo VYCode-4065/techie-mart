@@ -1,0 +1,270 @@
+# ========================================
+# COMPREHENSIVE MONOREPO .gitignore
+# Backend (Node.js + Prisma) & Frontend (Next.js + Tailwind CSS)
+# ========================================
+
+# ========================================
+# DEPENDENCIES & LOCK FILES
+# ========================================
+node_modules/
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+.pnpm-store/
+.pnp
+.pnp.js
+
+# ========================================
+# ENVIRONMENT VARIABLES - CRITICAL SECURITY
+# ========================================
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.production.local
+.env.test.local
+.env.staging.local
+.env.vault
+.env.production
+.env.development
+.env.test
+.env.staging
+.env.example.local
+
+# ========================================
+# PRISMA - DATABASE & GENERATED FILES
+# ========================================
+/backend/generated/prisma
+/backend/prisma/client
+/backend/generated
+backend/generated/
+generated/
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+.prisma/
+
+# ========================================
+# BUILD & OUTPUT DIRECTORIES
+# ========================================
+# Backend
+/backend/dist
+/backend/build
+/backend/out
+backend/dist/
+backend/build/
+
+# Frontend (Next.js)
+/frontend/.next
+/frontend/out
+/frontend/build
+/frontend/.turbo
+frontend/.next/
+frontend/out/
+frontend/build/
+.next/
+out/
+build/
+
+# Both
+dist/
+build/
+.turbo/
+coverage/
+.nyc_output/
+
+# ========================================
+# LOGS & DEBUG FILES
+# ========================================
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.npm
+.yarn-error.log
+
+# ========================================
+# OPERATING SYSTEM FILES
+# ========================================
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+.directory
+.Xauthority
+
+# ========================================
+# IDE & EDITOR SPECIFIC FILES
+# ========================================
+# VS Code
+.vscode/
+.vscode/settings.json
+.vscode/extensions.json
+.vscode/launch.json
+.vscode/tasks.json
+*.code-workspace
+
+# JetBrains IDEs (IntelliJ, WebStorm, etc.)
+.idea/
+.idea_modules/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# Vim/Neovim
+*.swp
+*.swo
+*~
+.vim/
+.netrwhist
+
+# Emacs
+*~
+\#*\#
+.\#*
+
+# Atom
+.atom/
+
+# Other
+.c9/
+.eclipse
+.project
+.classpath
+.settings/
+*.bak
+*.tmp
+
+# ========================================
+# PACKAGE MANAGER SPECIFIC
+# ========================================
+# npm
+npm-debug.log
+.npm/
+.npmignore
+
+# Yarn
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+.yarn-integrity
+
+# pnpm
+.pnpm-debug.log
+.pnpm/
+
+# ========================================
+# CACHE FILES
+# ========================================
+.eslintcache
+.stylelintcache
+.cache/
+.parcel-cache
+.next/cache/
+.swc
+.turbo/
+
+# ========================================
+# RUNTIME & TEMPORARY FILES
+# ========================================
+tmp/
+temp/
+.tmp/
+*.tmp
+*.pid
+*.pid.lock
+*.seed
+
+# ========================================
+# DATABASE & PERSISTENCE FILES
+# ========================================
+*.db
+*.sqlite
+*.sqlite3
+.mongodb/
+.mysql/
+.postgres/
+.db-journal
+data/
+
+# ========================================
+# NEXT.JS SPECIFIC
+# ========================================
+.next/
+out/
+.vercel/
+.next/cache
+next-env.d.ts
+
+# ========================================
+# TAILWIND CSS SPECIFIC
+# ========================================
+# Tailwind generally doesn't need specific ignores, but include if custom
+
+# ========================================
+# TESTING & COVERAGE
+# ========================================
+coverage/
+.coverage
+htmlcov/
+.nyc_output/
+jest-coverage/
+.jest-cache/
+
+# ========================================
+# RUNTIME & PROCESS MANAGERS
+# ========================================
+.pm2/
+.nodemon.json
+
+# ========================================
+# SENSITIVE DATA & SECRETS
+# ========================================
+*.pem
+*.key
+*.crt
+*.cert
+secrets/
+.secrets/
+private/
+
+# ========================================
+# DOCKER
+# ========================================
+.docker/
+
+# ========================================
+# FRONTEND BUILD ARTIFACTS
+# ========================================
+# Next.js
+.next/
+out/
+public/.next/
+
+# ========================================
+# MONOREPO SPECIFIC
+# ========================================
+.turbo/
+dist/
+build/

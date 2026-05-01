@@ -1,0 +1,100 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum GENDER {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum ROLE {
+  USER
+  ADMIN
+  SELLER
+}
+
+model User {
+  id                       Int       @id @default(autoincrement())
+  email                    String    @unique
+  username                 String
+  name                     String
+  password                 String
+  passwordResetToken       String?   @unique
+  passwordResetTokenExpiry DateTime?
+  gender                   GENDER
+  role                     ROLE      @default(USER)
+  address                  Address[]
+  created_at               DateTime  @default(now())
+  updated_at               DateTime  @updatedAt()
+  orders                   Orders[]
+  wishlist                 Json?
+  product                  Product[]
+  otp                      Int?
+}
+
+model Address {
+  id        Int    @id @default(autoincrement())
+  country   String
+  state     String
+  city      String
+  locallity String
+  userId    Int
+  user      User   @relation(fields: [userId], references: [id])
+}
+
+enum PAYMENTMODE {
+  ONLINE
+  CASH
+}
+
+model Orders {
+  id          Int         @id @default(autoincrement())
+  product     Product[]
+  custId      Int
+  customer    User        @relation(fields: [custId], references: [id])
+  paymentMode PAYMENTMODE @default(ONLINE)
+  orderDate   DateTime    @default(now())
+}
+
+model Product {
+  id          Int      @id @unique() @default(autoincrement())
+  category    String
+  subCategory String
+  name        String
+  price       Int
+  description String
+  image       String[]
+  stock       Int
+  discount    Decimal  @default(0)
+  orderId     Int
+  order       Orders   @relation(fields: [orderId], references: [id])
+  sellerId    Int
+  seller      User     @relation(fields: [sellerId], references: [id])
+  keyword     String[]
+  comments    String[]
+  rating      Int
+}
+
+model SubCategory {
+  id         Int      @unique() @default(autoincrement())
+  name       String
+  cateogryId Int
+  category   Category @relation(fields: [cateogryId], references: [id])
+}
+
+model Category {
+  id          Int           @unique() @default(autoincrement())
+  name        String
+  subcategory SubCategory[]
+}
