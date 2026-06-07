@@ -1,6 +1,6 @@
 {
     "watch": [
-        "src","env"
+        "src",".env"
     ],
     "ext": "ts,json",
     "ignore": [

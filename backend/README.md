@@ -1,6 +1,6 @@
 # 🛒 Techie Mart - Backend API Documentation
 
-> **A complete backend API for e-commerce platform built with Node.js, Express, TypeScript, and Prisma ORM**
+> Professional API documentation for the Techie Mart backend, built with Node.js, Express, TypeScript, Prisma, and PostgreSQL.
 
 ---
 
@@ -24,17 +24,16 @@
 
 ## Overview
 
-Techie Mart Backend is a robust, scalable API that powers the e-commerce platform. It provides user management, authentication, product management, and order handling functionalities with **PostgreSQL** database powered by **Prisma ORM**.
+Techie Mart Backend is a production-ready API for an e-commerce platform. It offers secure user authentication, password reset workflows, seller-managed product operations, and read-only public product browsing.
 
 ### Key Features
-- ✅ User authentication with JWT tokens
-- ✅ Secure password management with bcryptjs
-- ✅ Password reset functionality with email verification
-- ✅ User profile management (email, name, gender updates)
-- ✅ Cookie-based session management
-- ✅ CORS enabled for frontend integration
-- ✅ Helmet for security headers
-- ✅ Comprehensive error handling
+- ✅ User registration and login with JWT session cookies
+- ✅ Password reset via email token
+- ✅ Role-based product management for sellers
+- ✅ Product image upload through Cloudinary
+- ✅ Prisma ORM for PostgreSQL data access
+- ✅ Centralized error handling and validation
+- ✅ CORS and Helmet security headers enabled
 
 ---
 
@@ -42,17 +41,18 @@ Techie Mart Backend is a robust, scalable API that powers the e-commerce platfor
 
 | Technology | Purpose | Version |
 |-----------|---------|---------|
-| **Node.js** | Runtime environment | Latest |
-| **Express.js** | Web framework | ^5.2.1 |
-| **TypeScript** | Type safety | ^6.0.2 |
-| **Prisma ORM** | Database ORM | ^7.7.0 |
-| **PostgreSQL** | Database | Latest |
-| **JWT** | Authentication | ^9.0.3 |
-| **bcryptjs** | Password hashing | ^3.0.3 |
-| **Nodemailer** | Email sending | ^8.0.7 |
-| **CORS** | Cross-origin requests | ^2.8.6 |
-| **Helmet** | Security headers | ^8.1.0 |
-| **pnpm** | Package manager | ^10.33.0 |
+| Node.js | Runtime environment | Latest |
+| Express.js | Web framework | ^5.2.1 |
+| TypeScript | Type safety | ^6.0.2 |
+| Prisma ORM | Database access | ^7.7.0 |
+| PostgreSQL | Database | Latest |
+| JWT | Authentication | ^9.0.3 |
+| bcryptjs | Password hashing | ^3.0.3 |
+| Nodemailer | Email delivery | ^8.0.7 |
+| Cloudinary | Image storage | ^2.10.0 |
+| CORS | Cross-origin requests | ^2.8.6 |
+| Helmet | Security headers | ^8.1.0 |
+| pnpm | Package manager | ^10.33.0 |
 
 ---
 
@@ -61,40 +61,41 @@ Techie Mart Backend is a robust, scalable API that powers the e-commerce platfor
 ```
 backend/
 ├── prisma/
-│   ├── schema.prisma          # Database schema definition
-│   └── migrations/            # Migration files
-├── generated/prisma/          # Auto-generated Prisma files
+│   ├── schema.prisma
+│   └── migrations/
 ├── src/
-│   ├── app.ts                 # Express app configuration
-│   ├── server.ts              # Server entry point
-│   ├── controllers/           # Request handlers
+│   ├── app.ts
+│   ├── server.ts
+│   ├── controllers/
+│   │   ├── product.controller.ts
 │   │   └── user.controller.ts
-│   ├── routes/                # API routes
+│   ├── routes/
+│   │   ├── product.route.ts
 │   │   └── user.route.ts
-│   ├── middleware/            # Custom middleware
-│   │   └── auth.middleware.ts
-│   ├── helper/                # Business logic
-│   │   ├── user.helper.ts
+│   ├── middleware/
+│   │   ├── auth.middleware.ts
+│   │   ├── isAuthorize.middleware.ts
+│   │   └── upload.middleware.ts
+│   ├── helper/
 │   │   ├── email.helper.ts
+│   │   ├── generateToken.helper.ts
 │   │   ├── hashPassword.helper.ts
-│   │   └── generateToken.helper.ts
-│   ├── lib/                   # Library files
+│   │   ├── product.helper.ts
+│   │   └── user.helper.ts
+│   ├── lib/
 │   │   └── prisma.ts
-│   ├── utils/                 # Utility functions
-│   │   ├── ApiResponse.ts
-│   │   ├── ApiError.ts
-│   │   └── asyncHandler.ts
-│   ├── types/                 # TypeScript types
+│   ├── types/
 │   │   └── interface.ts
-│   └── @types/                # Type definitions
-│       └── express/
-├── .env                       # Environment variables (DO NOT COMMIT)
-├── .gitignore                 # Git ignore rules
-├── package.json               # Project dependencies
-├── tsconfig.json              # TypeScript configuration
-├── nodemon.json               # Nodemon configuration
-└── README.md                  # This file
-
+│   └── utils/
+│       ├── ApiError.ts
+│       ├── ApiResponse.ts
+│       └── asyncHandler.ts
+├── .env
+├── .gitignore
+├── package.json
+├── tsconfig.json
+├── nodemon.json
+└── README.md
 ```
 
 ---
@@ -102,40 +103,23 @@ backend/
 ## Installation & Setup
 
 ### Prerequisites
-- **Node.js** (v18 or higher)
-- **pnpm** (v10.33.0 or higher)
+- **Node.js** v18 or higher
+- **pnpm** v10.33.0 or higher
 - **PostgreSQL** database
 
-### Step 1: Clone the Repository
+### Setup Steps
 
 ```bash
-git clone <repository-url>
 cd techie-mart/backend
-```
-
-### Step 2: Install Dependencies
-
-```bash
 pnpm install
 ```
 
-### Step 3: Set Up Environment Variables
+Create your `.env` file and configure the environment variables.
 
-Create a `.env` file in the backend root directory:
-
-```bash
-cp .env.example .env
-```
-
-### Step 4: Configure Database
+Then run:
 
 ```bash
 pnpm exec prisma migrate dev --name init
-```
-
-### Step 5: Generate Prisma Client
-
-```bash
 pnpm exec prisma generate
 ```
 
@@ -143,52 +127,43 @@ pnpm exec prisma generate
 
 ## Environment Configuration
 
-Create a `.env` file with the following variables:
+Create a `.env` file with the following values:
 
 ```env
-# Database
 DATABASE_URL=postgresql://username:password@localhost:5432/techie_mart
-
-# Server
 PORT=5000
 NODE_ENV=development
-
-# JWT
 JWT_KEY=your-super-secret-jwt-key-min-32-characters
 JWT_EXPIRY=24h
-
-# Email Service (Nodemailer)
-SMTP_SERVICE=gmail
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your-email@gmail.com
-SMTP_PASSWORD=your-app-specific-password
-
-# Frontend URLs
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_SECURE=false
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASS=your-email-password
+EMAIL_FROM=your-email@gmail.com
+CLOUDINARY_API_KEY=your-cloudinary-api-key
+CLOUDINARY_API_SECRET=your-cloudinary-api-secret
+CLOUDINARY_CLOUD_NAME=your-cloudinary-cloud-name
 FRONTEND_URL=http://localhost:3000
 RESET_PASSWORD_URL=http://localhost:3000
-
-# Security
 CORS_ORIGIN=*
 ```
 
-### Important Notes:
-- 🔐 **Never** commit `.env` file to Git
-- ⚠️ Use strong JWT_KEY (minimum 32 characters)
-- 📧 For Gmail, use [App Passwords](https://support.google.com/accounts/answer/185833)
-- 🔒 Keep JWT_KEY secret and secure
+### Notes
+- Do not commit `.env`.
+- Use strong, unique secrets for `JWT_KEY`.
+- Cloudinary is required for product image uploads.
+- Email settings are used for password reset messages.
 
 ---
 
 ## Running the Server
 
-### Development Mode (with Hot Reload)
+### Development
 
 ```bash
 pnpm dev
 ```
-
-The server will start at `http://localhost:5000` and automatically reload on file changes.
 
 ### Production Build
 
@@ -196,7 +171,7 @@ The server will start at `http://localhost:5000` and automatically reload on fil
 pnpm build
 ```
 
-### Production Run
+### Run Production
 
 ```bash
 pnpm start
@@ -207,21 +182,19 @@ pnpm start
 ## API Endpoints
 
 ### Base URL
-```
-http://localhost:5000/api/v1
-```
+
+`http://localhost:5000/api/v1`
 
 ---
 
-### 👤 USER AUTHENTICATION ENDPOINTS
+## 👤 User Authentication Endpoints
 
-#### 1️⃣ **Register User**
+### Register User
 
-Register a new user account.
+**POST** `/user/register`
 
-**Endpoint:** `POST /user/register`
+**Body:**
 
-**Request Body:**
 ```json
 {
   "email": "user@example.com",
@@ -232,16 +205,8 @@ Register a new user account.
 }
 ```
 
-**Required Fields:**
-| Field | Type | Description |
-|-------|------|-------------|
-| `email` | String | User's email (must be unique) |
-| `username` | String | Username (must be unique) |
-| `name` | String | User's full name |
-| `password` | String | Password (min 6 characters) |
-| `gender` | Enum | MALE, FEMALE, or OTHER |
+**Success:** `200`
 
-**Success Response (200):**
 ```json
 {
   "message": "User registered successfully !",
@@ -258,29 +223,16 @@ Register a new user account.
 }
 ```
 
-**Error Response (401):**
-```json
-{
-  "message": "User with this email already exists !",
-  "data": null,
-  "success": false
-}
-```
-
-**Possible Errors:**
-- ❌ All fields are required
-- ❌ Email already exists
-- ❌ Username already exists
+**Errors:** missing fields, duplicate email.
 
 ---
 
-#### 2️⃣ **Login User**
+### Login User
 
-Authenticate user and get authentication token.
+**POST** `/user/login`
 
-**Endpoint:** `POST /user/login`
+**Body:**
 
-**Request Body:**
 ```json
 {
   "email": "user@example.com",
@@ -288,7 +240,8 @@ Authenticate user and get authentication token.
 }
 ```
 
-**Or use username:**
+Or:
+
 ```json
 {
   "username": "johndoe",
@@ -296,148 +249,70 @@ Authenticate user and get authentication token.
 }
 ```
 
-**Success Response (200):**
-```json
-{
-  "message": "User logged in successfully !",
-  "data": {
-    "id": 1,
-    "email": "user@example.com",
-    "username": "johndoe",
-    "name": "John Doe",
-    "gender": "MALE",
-    "role": "USER"
-  },
-  "success": true
-}
-```
+**Success:** `200`
+- Sets `authKey` cookie
 
-**Set-Cookie Header:**
-```
-authKey=eyJhbGciOiJIUzI1NiIs...; HttpOnly; Secure; SameSite=Strict; Max-Age=86400000
-```
-
-**Error Response (400):**
-```json
-{
-  "message": "Fill all required field !",
-  "success": false
-}
-```
-
-**Possible Errors:**
-- ❌ Email/username not found
-- ❌ Incorrect password
-- ❌ Missing email/username or password
+**Errors:** missing credentials, invalid credentials.
 
 ---
 
-#### 3️⃣ **Logout User**
+### Logout User
 
-Logout and clear session.
+**GET** `/user/logout`
 
-**Endpoint:** `GET /user/logout`
+**Requires:** `authKey` cookie.
 
-**Authorization:** ✅ **Required** (Cookie: authKey)
+**Success:** `200`
 
-**Success Response (200):**
-```json
-{
-  "message": "User logout successfully !",
-  "success": true
-}
-```
-
-**Error Response (401):**
-```json
-{
-  "message": "Unauthorized access.",
-  "success": false
-}
-```
+**Errors:** unauthorized when cookie is absent or invalid.
 
 ---
 
-### 🔑 PASSWORD MANAGEMENT ENDPOINTS
+## 🔑 Password Management
 
-#### 4️⃣ **Forgot Password**
+### Forgot Password
 
-Request password reset link via email.
+**POST** `/user/forgot-password`
 
-**Endpoint:** `POST /user/forgot-password`
+**Body:**
 
-**Request Body:**
 ```json
 {
   "email": "user@example.com"
 }
 ```
 
-**Success Response (200):**
-```json
-{
-  "message": "Password reset link sent to your email address !",
-  "data": null,
-  "success": true
-}
-```
+**Success:** `200`
+- Sends reset link to the user email.
 
-**Error Response (400):**
-```json
-{
-  "message": "User with this email does not exist !",
-  "data": null,
-  "success": false
-}
-```
-
-**Email Content:**
-- Contains a reset link with token
-- Link format: `{FRONTEND_URL}/reset-password?token={RESET_TOKEN}`
-- Token expires in 1 hour
+**Errors:** email missing or not found.
 
 ---
 
-#### 5️⃣ **Verify Reset Token**
+### Verify Reset Token
 
-Verify if reset token is valid.
+**GET** `/user/reset-password/verify/:token`
 
-**Endpoint:** `GET /user/reset-password/verify/:token`
+**Success:** `200`
 
-**URL Parameter:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `token` | String | Password reset token from email |
-
-**Success Response (200):**
 ```json
 {
   "message": "Reset token is valid.",
-  "data": {
-    "email": "user@example.com"
-  },
+  "data": { "email": "user@example.com" },
   "success": true
 }
 ```
 
-**Error Response (400):**
-```json
-{
-  "message": "Reset token is invalid or has expired !",
-  "data": null,
-  "success": false
-}
-```
+**Errors:** invalid or expired token.
 
 ---
 
-#### 6️⃣ **Reset Password**
+### Reset Password
 
-Reset user password with valid token.
+**POST** `/user/reset-password`
 
-**Endpoint:** `POST /user/reset-password`
+**Body:**
 
-**Request Body:**
 ```json
 {
   "token": "abc123def456...",
@@ -445,48 +320,20 @@ Reset user password with valid token.
 }
 ```
 
-**Required Fields:**
-| Field | Type | Description |
-|-------|------|-------------|
-| `token` | String | Reset token from email |
-| `newPassword` | String | New password (min 6 characters) |
+**Success:** `200`
 
-**Success Response (200):**
-```json
-{
-  "message": "Password updated successfully !",
-  "data": null,
-  "success": true
-}
-```
-
-**Error Response (400):**
-```json
-{
-  "message": "Reset token is invalid or has expired !",
-  "data": null,
-  "success": false
-}
-```
-
-**Post-Reset:**
-- Confirmation email sent to user
-- Token cleared from database
-- User needs to login with new password
+**Errors:** missing token/password, invalid token.
 
 ---
 
-### 👥 USER MANAGEMENT ENDPOINTS
+### Update User Profile
 
-#### 7️⃣ **Update User Profile**
+**PUT** `/user/update`
 
-Update user information (email, name, gender).
+**Requires:** `authKey` cookie.
 
-**Endpoint:** `PUT /user/update`
+**Body:** any of the following:
 
-**Authorization:** ✅ **Required** (Cookie: authKey)
-
-**Request Body (all fields optional):**
 ```json
 {
   "email": "newemail@example.com",
@@ -495,267 +342,211 @@ Update user information (email, name, gender).
 }
 ```
 
-**Update Options:**
-- Update one field at a time
-- Update multiple fields together
-- Fields not provided remain unchanged
+**Success:** `200`
 
-**Success Response (200):**
-```json
-{
-  "message": "User updated successfully!",
-  "data": {
-    "id": 1,
-    "email": "newemail@example.com",
-    "username": "johndoe",
-    "name": "Jane Doe",
-    "gender": "FEMALE"
-  },
-  "success": true
-}
-```
-
-**Error Response (400):**
-```json
-{
-  "message": "Email is already taken by another user!",
-  "data": null,
-  "success": false
-}
-```
-
-**Possible Errors:**
-- ❌ At least one field must be provided
-- ❌ Email already taken by another user
-- ❌ User not found
-- ❌ No changes detected
+**Errors:** invalid data, email already in use.
 
 ---
 
-#### 8️⃣ **Get All Users**
+### Get All Users
 
-Retrieve list of all users (public data).
+**GET** `/user`
 
-**Endpoint:** `GET /user`
+**Success:** `200`
 
-**Query Parameters:** None
-
-**Success Response (200):**
-```json
-{
-  "message": "Users fetched successfully !",
-  "data": [
-    {
-      "id": 1,
-      "email": "user1@example.com",
-      "username": "johndoe",
-      "name": "John Doe",
-      "gender": "MALE",
-      "role": "USER",
-      "created_at": "2026-05-01T10:00:00Z"
-    },
-    {
-      "id": 2,
-      "email": "user2@example.com",
-      "username": "janedoe",
-      "name": "Jane Doe",
-      "gender": "FEMALE",
-      "role": "USER",
-      "created_at": "2026-05-01T11:00:00Z"
-    }
-  ],
-  "success": true
-}
-```
-
-**Error Response (400):**
-```json
-{
-  "message": "No user found !",
-  "data": null,
-  "success": false
-}
-```
+**Errors:** no users found.
 
 ---
 
-#### 9️⃣ **Get User by ID**
+### Get User by ID
 
-Retrieve specific user information by ID.
+**GET** `/user/:id`
 
-**Endpoint:** `GET /user/:id`
+**Success:** `200`
 
-**URL Parameter:**
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `id` | Number | User ID |
+**Errors:** user not found.
 
-**Success Response (200):**
+---
+
+## 🛍️ Product Endpoints
+
+### Add Product
+
+**POST** `/product/add`
+
+**Requires:** `authKey` cookie
+
+**Role:** `SELLER`
+
+**Content-Type:** `multipart/form-data`
+
+**Fields:**
+- `category` (String)
+- `subCategory` (String)
+- `name` (String)
+- `price` (Number)
+- `description` (String)
+- `stock` (Number)
+- `discount` (Number, optional)
+- `sellerId` (Number)
+- `keyword` (String or comma-separated values)
+- `rating` (Number, optional, 0-5)
+- `images` (file array, max 3 files)
+
+**Success:** `201`
+
+**Errors:** missing fields, invalid values, seller not found.
+
+---
+
+### Update Product
+
+**PUT** `/product/update/:id`
+
+**Requires:** `authKey` cookie
+
+**Role:** `SELLER`
+
+**Body:** any updatable product fields.
+
+**Success:** `200`
+
+**Errors:** invalid ID, product not found.
+
+---
+
+### Update Product Stock
+
+**PUT** `/product/stock/:id`
+
+**Requires:** `authKey` cookie
+
+**Role:** `SELLER`
+
+**Body:**
+
 ```json
 {
-  "message": "Users fetched successfully !",
-  "data": {
-    "id": 1,
-    "email": "user@example.com",
-    "username": "johndoe",
-    "name": "John Doe",
-    "gender": "MALE",
-    "role": "USER",
-    "created_at": "2026-05-01T10:00:00Z"
-  },
-  "success": true
+  "stock": 10
 }
 ```
 
-**Error Response (400):**
-```json
-{
-  "message": "No user found !",
-  "data": null,
-  "success": false
-}
-```
+**Success:** `200`
+
+**Errors:** missing stock, invalid stock, not enough inventory.
+
+---
+
+### Get Product by ID
+
+**GET** `/product/:id`
+
+**Success:** `200`
+
+**Errors:** product not found.
+
+---
+
+### Get Products by Category
+
+**GET** `/product/category/:category`
+
+**Success:** `200`
+
+**Errors:** no products found for category.
+
+---
+
+### Search Products
+
+**GET** `/product/search?q=searchQuery`
+
+**Success:** `200`
+
+**Errors:** invalid query or no results.
+
+---
+
+### Delete Product
+
+**DELETE** `/product/delete/:productId`
+
+**Requires:** `authKey` cookie
+
+**Role:** `SELLER`
+
+**Success:** `200`
+
+**Errors:** product not found.
 
 ---
 
 ## Authentication
 
-### JWT Authentication
+Protected routes use the `auth` middleware and a JWT stored in the `authKey` cookie.
 
-All protected endpoints require a valid JWT token passed via **HTTP-only Cookie**.
+### Protected Routes
+- `GET /user/logout`
+- `PUT /user/update`
+- `POST /product/add`
+- `PUT /product/update/:id`
+- `PUT /product/stock/:id`
+- `DELETE /product/delete/:productId`
 
-### How It Works:
-
-1. **Login** → Receive `authKey` cookie with JWT token
-2. **Include Cookie** → Browser automatically includes cookie in requests
-3. **Backend Verifies** → Middleware validates token on protected routes
-4. **Logout** → Cookie is cleared
-
-### Protected Endpoints:
-- `GET /user/logout` - Requires authentication
-- `PUT /user/update` - Requires authentication
-
-### Token Details:
-- **Type:** JWT (JSON Web Token)
-- **Storage:** HTTP-only Cookie (secure)
-- **Expiry:** 24 hours (configurable in .env)
-- **Name:** `authKey`
-
-### Cookie Security:
-```
-HttpOnly: true     // Prevents JavaScript access
-Secure: true       // Only sent over HTTPS
-SameSite: strict   // Prevents CSRF attacks
-```
-
-### Example with Fetch API:
-
-```javascript
-// Login to get token
-const loginResponse = await fetch('http://localhost:5000/api/v1/user/login', {
-  method: 'POST',
-  credentials: 'include', // Include cookies
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    email: 'user@example.com',
-    password: 'password123'
-  })
-});
-
-// Cookie is automatically stored by browser
-
-// Use protected endpoint (cookie sent automatically)
-const logoutResponse = await fetch('http://localhost:5000/api/v1/user/logout', {
-  method: 'GET',
-  credentials: 'include' // Include cookies
-});
-```
+### Cookie Policy
+- `HttpOnly: true`
+- `Secure: true`
+- `SameSite: strict`
 
 ---
 
 ## Response Format
 
-### Success Response Structure:
+### Success
 
 ```json
 {
-  "message": "Description of what happened",
+  "message": "Description",
   "data": {},
   "success": true
 }
 ```
 
-### Error Response Structure:
+### Error
 
 ```json
 {
-  "message": "Description of the error",
+  "message": "Error details",
   "data": null,
   "success": false
 }
 ```
 
-### HTTP Status Codes:
+### Status Codes
 
 | Code | Meaning |
 |------|---------|
-| **200** | ✅ Success |
-| **201** | ✅ Created |
-| **400** | ❌ Bad Request / Validation Error |
-| **401** | ❌ Unauthorized / Authentication Failed |
-| **404** | ❌ Not Found |
-| **500** | ❌ Server Error |
+| 200 | Success |
+| 201 | Created |
+| 400 | Bad Request |
+| 401 | Unauthorized |
+| 403 | Forbidden |
+| 404 | Not Found |
+| 500 | Server Error |
 
 ---
 
 ## Error Handling
 
-### Common Error Scenarios:
-
-#### 1. **Missing Required Fields**
-```json
-{
-  "message": "All required field should be filled !",
-  "data": null,
-  "success": false
-}
-```
-
-#### 2. **Duplicate Email/Username**
-```json
-{
-  "message": "User with this email already exists !",
-  "data": null,
-  "success": false
-}
-```
-
-#### 3. **Invalid Credentials**
-```json
-{
-  "message": "Incorrect credentials !",
-  "data": null,
-  "success": false
-}
-```
-
-#### 4. **Unauthorized Access**
-```json
-{
-  "message": "Unauthorized access.",
-  "data": null,
-  "success": false
-}
-```
-
-#### 5. **Session Timeout**
-```json
-{
-  "message": "Session timeout. Login again to access.",
-  "data": null,
-  "success": false
-}
-```
+### Common Responses
+- `All required field should be filled !`
+- `User with this email already exists !`
+- `Fill all required field !`
+- `Incorrect credentials !`
+- `Unauthorized access .`
+- `Session timeout. Login again to access.`
+- `Product id is required !`
+- `No products found for the specified category !`
 
 ---
 
@@ -763,201 +554,88 @@ const logoutResponse = await fetch('http://localhost:5000/api/v1/user/logout', {
 
 ### User Model
 
-```sql
-CREATE TABLE "User" (
-  id                        INT PRIMARY KEY DEFAULT autoincrement(),
-  email                     VARCHAR UNIQUE NOT NULL,
-  username                  VARCHAR NOT NULL,
-  name                      VARCHAR NOT NULL,
-  password                  VARCHAR NOT NULL,
-  passwordResetToken        VARCHAR UNIQUE,
-  passwordResetTokenExpiry  TIMESTAMP,
-  gender                    ENUM('MALE', 'FEMALE', 'OTHER'),
-  role                      ENUM('USER', 'ADMIN', 'SELLER') DEFAULT 'USER',
-  created_at                TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at                TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  wishlist                  JSON,
-  otp                       INT
-);
-```
+- `id` Int
+- `email` String
+- `username` String
+- `name` String
+- `password` String
+- `passwordResetToken` String?
+- `passwordResetTokenExpiry` DateTime?
+- `gender` GENDER (`MALE`, `FEMALE`, `OTHER`)
+- `role` ROLE (`USER`, `ADMIN`, `SELLER`)
+- `created_at` DateTime
+- `updated_at` DateTime
+- `wishlist` Json?
+- `otp` Int?
 
-### Available Enums:
+### Product Model
 
-**GENDER:** `MALE`, `FEMALE`, `OTHER`
+- `id` Int
+- `category` String
+- `subCategory` String
+- `name` String
+- `price` Decimal
+- `description` String
+- `image` String[]
+- `stock` Int
+- `discount` Decimal
+- `sellerId` Int
+- `keyword` String[]
+- `comments` String[]
+- `rating` Int
+- `createdAt` DateTime
 
-**ROLE:** `USER`, `ADMIN`, `SELLER`
-
-### Related Models:
-- **Address** - User addresses
-- **Orders** - User orders
-- **Product** - Products added by user
+### Enums
+- `GENDER`: `MALE`, `FEMALE`, `OTHER`
+- `ROLE`: `USER`, `ADMIN`, `SELLER`
+- `PAYMENTMODE`: `ONLINE`, `CASH`
 
 ---
 
 ## Best Practices
 
-### For Frontend Developers:
-
-#### ✅ DO:
-- ✔️ Always use `credentials: 'include'` in fetch requests
-- ✔️ Check `success` field in responses before accessing data
-- ✔️ Display user-friendly error messages from `message` field
-- ✔️ Store user data from response, don't repeat API calls
-- ✔️ Implement loading states during API calls
-- ✔️ Handle 401 errors by redirecting to login
-- ✔️ Use environment variables for API base URL
-
-#### ❌ DON'T:
-- ❌ Don't manually manage JWT tokens
-- ❌ Don't store sensitive data in localStorage
-- ❌ Don't ignore error responses
-- ❌ Don't make unnecessary API calls
-- ❌ Don't hardcode API URLs
-- ❌ Don't expose API keys in frontend code
-
-### Example Frontend Integration:
-
-```javascript
-// .env.local
-REACT_APP_API_URL=http://localhost:5000/api/v1
-
-// api.ts
-const API_BASE_URL = process.env.REACT_APP_API_URL;
-
-export async function loginUser(email, password) {
-  try {
-    const response = await fetch(`${API_BASE_URL}/user/login`, {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-    
-    const data = await response.json();
-    
-    if (!data.success) {
-      throw new Error(data.message);
-    }
-    
-    return data.data;
-  } catch (error) {
-    console.error('Login failed:', error.message);
-    throw error;
-  }
-}
-
-export async function logoutUser() {
-  try {
-    const response = await fetch(`${API_BASE_URL}/user/logout`, {
-      method: 'GET',
-      credentials: 'include'
-    });
-    
-    const data = await response.json();
-    return data.success;
-  } catch (error) {
-    console.error('Logout failed:', error.message);
-    throw error;
-  }
-}
-```
+- Use `credentials: 'include'` for authenticated frontend requests.
+- Validate responses before consuming them.
+- Keep secrets in `.env` only.
+- Use strong passwords and secure JWT keys.
+- Limit image uploads to the configured Cloudinary settings.
 
 ---
 
 ## Troubleshooting
 
-### Issue: "JWT_KEY is not defined"
-**Solution:** Add `JWT_KEY` to `.env` file
+### Database connection fails
+- Ensure PostgreSQL is running.
+- Verify `DATABASE_URL`.
+- Run `pnpm exec prisma migrate dev`.
 
-### Issue: "Cannot connect to database"
-**Solution:** 
-- Check PostgreSQL is running
-- Verify `DATABASE_URL` in `.env`
-- Run `pnpm exec prisma migrate dev`
+### JWT issues
+- Confirm `JWT_KEY` is present in `.env`.
 
-### Issue: "Email sending fails"
-**Solution:**
-- Verify SMTP credentials in `.env`
-- For Gmail, use [App Passwords](https://support.google.com/accounts/answer/185833)
-- Check SMTP port (usually 587 or 465)
+### Email fails
+- Verify `EMAIL_HOST`, `EMAIL_USER`, and `EMAIL_PASS`.
+- Confirm SMTP port and secure settings.
 
-### Issue: "CORS errors in frontend"
-**Solution:**
-- Ensure frontend URL in `.env` `CORS_ORIGIN`
-- Use `credentials: 'include'` in frontend requests
-- Check that cookies are enabled
-
-### Issue: "Token expired immediately"
-**Solution:**
-- Increase `JWT_EXPIRY` in `.env`
-- Default is 24 hours
-- Format: `"24h"`, `"7d"`, etc.
-
-### Issue: "Cannot reset password - link expired"
-**Solution:**
-- Password reset tokens expire in 1 hour
-- Request new reset token if expired
-- Check email for timestamp
+### Cloudinary fails
+- Check `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`, and `CLOUDINARY_CLOUD_NAME`.
 
 ---
 
-## Quick Start Guide
+## Quick Start
 
 ```bash
-# 1. Install dependencies
 pnpm install
-
-# 2. Setup environment
 cp .env.example .env
-# Edit .env with your values
-
-# 3. Setup database
 pnpm exec prisma migrate dev --name init
-
-# 4. Start development server
 pnpm dev
-
-# 5. Backend ready at http://localhost:5000
 ```
 
 ---
 
 ## Next Steps
 
-### Frontend Development:
-1. Read this documentation completely
-2. Understand request/response formats
-3. Set up authentication flow
-4. Implement all endpoints
-5. Add error handling
-6. Test thoroughly
-
-### Backend Enhancement:
-- [ ] Add product management endpoints
-- [ ] Add order management
-- [ ] Add admin controls
-- [ ] Add payment integration
-- [ ] Add wishlist functionality
-- [ ] Add rating/review system
-
----
-
-## Support & Contributions
-
-For issues, questions, or suggestions, please contact the development team or create an issue in the repository.
-
----
-
-## License
-
-ISC License - See LICENSE file for details
-
----
-
-**Last Updated:** May 1, 2026
-
-**Version:** 1.0.0
-
----
-
-*This documentation is accurate as of the latest commit. For updates, please refer to the main repository.*
+- Add order and checkout endpoints.
+- Add admin product controls.
+- Add wishlist and review support.
+- Add automated endpoint tests.
+- Harden validation and error reporting.

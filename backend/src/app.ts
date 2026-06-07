@@ -3,11 +3,14 @@ import cors from 'cors'
 import helmet from "helmet";
 import cookieParser from 'cookie-parser'
 import userRouter from "./routes/user.route.js";
+import productRouter from "./routes/product.route.js";
+import { upload} from "./middleware/upload.middleware.js";
+import multer from "multer";
 
 const app:Application = express();
 
 process.on('uncaughtException',(err)=>{
-    console.log(`A uncought exception occured at server . \n Closing the server....`)
+    console.log(`A uncought exception occured at server .\n ${err.message} \n Closing the server....`)
     process.exit(1);
 })
 
@@ -27,9 +30,8 @@ app.use(helmet({
 }))
 
 
-// Application route paths 
-
 app.use('/api/v1/user',userRouter)
+app.use('/api/v1/product', productRouter)
 
 app.get('/',(req,res)=>{
 

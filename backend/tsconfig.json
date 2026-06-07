@@ -44,6 +44,6 @@
     "skipLibCheck": true,
     
   },
-  "include": ["src/**/*","env"],
+  "include": ["src/**/*","env","src/generated"],
   "exclude": ["node_modules","prisma"]
 }
