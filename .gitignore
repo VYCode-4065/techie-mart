@@ -34,7 +34,7 @@ yarn.lock
 # ========================================
 # PRISMA - DATABASE & GENERATED FILES
 # ========================================
-/backend/generated/prisma
+/backend/src/generated/prisma
 /backend/prisma/client
 /backend/generated
 backend/generated/
@@ -54,6 +54,9 @@ generated/
 /backend/out
 backend/dist/
 backend/build/
+
+# Backup images
+/backend/src/uploads
 
 # Frontend (Next.js)
 /frontend/.next
