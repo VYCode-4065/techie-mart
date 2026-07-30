@@ -6,6 +6,10 @@ import { Eye, EyeOff } from 'lucide-react'
 import Image from 'next/image'
 import LoginImage from '@/public/loginImage.png'
 import Logo from '@/public/logo.png'
+import useLogin from '@/hooks/useLogin.hooks'
+import IResponse from '@/types/response.types'
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false)
@@ -17,6 +21,7 @@ const LoginPage = () => {
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const router = useRouter();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target
@@ -31,24 +36,31 @@ const LoginPage = () => {
     e.preventDefault()
     
     if (!formData.email || !formData.password) {
-      setError('Please fill in all fields')
+      toast.error('Please fill in all fields')
       return
     }
 
     setLoading(true)
     try {
-      // Call your backend login API here
-      console.log('Login attempt:', formData)
-      // Example: const response = await fetch('/api/v1/user/login', {...})
+      const res:IResponse = await useLogin(formData) as IResponse;
+
+      if(!res.success){
+        toast.error(res.message);
+        return;
+      }
+
+      toast.success('User logged-in successfully !')
+      router.push('/')
+
     } catch (err) {
-      setError('Login failed. Please try again.')
+      toast.error('Login failed. Please try again.')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className='w-screen flex overflow-hidden bg-slate-950'>
+    <div className='h-screen flex overflow-hidden bg-slate-950'>
       {/* Left Section - Marketing */}
       <div className='hidden lg:flex lg:w-1/2  flex-col items-center justify-center'>
         
@@ -58,8 +70,7 @@ const LoginPage = () => {
           
       </div>
 
-      {/* Right Section - Form */}
-      <div className='w-full h- lg:h-auto lg:w-1/2 flex items-center justify-center lg:p-4'>
+      <div className='w-full h- lg:h-auto lg:w-1/2 flex items-center justify-center'>
         <div className='w-full max-w-md'>
           <div className='bg-slate-900 border border-slate-700 md:rounded-2xl p-8 shadow-2xl'>
             
@@ -72,18 +83,10 @@ const LoginPage = () => {
               <h1 className='text-3xl font-bold text-white mb-2 pt-2'>Log In</h1>
               <p className='text-slate-400'>Please login to continue to your account.</p>
             </div>
-
-            {/* Error Message */}
-            {error && (
-              <div className='mb-4 p-3 bg-red-500 bg-opacity-10 border border-red-500 border-opacity-30 rounded-lg'>
-                <p className='text-red-400 text-sm'>{error}</p>
-              </div>
-            )}
-
-            {/* Form */}
+         
             <form onSubmit={handleSubmit} className='space-y-5'>
               
-              {/* Email Field */}
+             
               <div>
                 <label htmlFor='email' className='block text-sm font-medium text-slate-300 mb-2'>
                   Email

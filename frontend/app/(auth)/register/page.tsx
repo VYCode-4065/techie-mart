@@ -6,6 +6,11 @@ import { Eye, EyeOff } from 'lucide-react'
 import Image from 'next/image'
 import TechieRegister from '@/public/registerImage.png'
 import Logo from '@/public/logo.png'
+import { toast } from 'sonner'
+import useRegister from '@/hooks/useRegister.hooks'
+import { IRegister } from '@/types/auth.types'
+import IResponse from '@/types/response.types'
+import { useRouter } from 'next/navigation'
 const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -20,7 +25,10 @@ const RegisterPage = () => {
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
+  const [success, setSuccess] = useState('');
+
+  const router = useRouter();
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target as HTMLInputElement
@@ -35,44 +43,46 @@ const RegisterPage = () => {
 
   const validateForm = (): boolean => {
     if (!formData.email || !formData.username || !formData.name || !formData.password || !formData.confirmPassword) {
-      setError('Please fill in all fields')
+      toast.error('Please fill in all fields');
       return false
     }
     
     if (formData.password.length < 6) {
-      setError('Password must be at least 6 characters long')
+      toast.error('Password must be at least 6 characters long')
       return false
     }
     
     if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match')
+      toast.error('Passwords do not match')
       return false
     }
     
     if (!formData.agreedToTerms) {
-      setError('You must agree to the Terms and Conditions')
+      toast.error('You must agree to the Terms and Conditions')
       return false
     }
     
     return true
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async(e: React.SubmitEvent) => {
     e.preventDefault()
+    
     
     if (!validateForm()) return
 
     setLoading(true)
     try {
-      // Call your backend register API here
-      console.log('Register attempt:', formData)
-      // Example: const response = await fetch('/api/v1/user/register', {...})
-      setSuccess('Account created successfully! Redirecting to login...')
-      setTimeout(() => {
-        // window.location.href = '/login'
-      }, 2000)
+      const res = await useRegister(formData as IRegister) as IResponse
+     if(!res.success){
+        toast.error(res.message);
+        return;
+      }
+      toast.success('User register successfully !')
+      router.push('/login')
     } catch (err) {
       setError('Registration failed. Please try again.')
+      console.log(err)
     } finally {
       setLoading(false)
     }
@@ -104,8 +114,8 @@ const RegisterPage = () => {
 
             {/* Error Message */}
             {error && (
-              <div className='mb-4 p-3 bg-red-400 bg-opacity-10 border border-red-400 border-opacity-30 rounded-lg text-blue-800'>
-                <p className='text-red-400 text-sm'>{error}</p>
+              <div className='mb-4 p-3 bg-red-600 bg-opacity-10 border border-red-400 border-opacity-30 rounded-lg text-blue-800'>
+                <p className='text-slate-100 text-sm'>{error}</p>
               </div>
             )}
 
@@ -117,7 +127,7 @@ const RegisterPage = () => {
             )}
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className='space-y-4'>
+            <form onSubmit={handleSubmit} className='space-y-4' method='POST'>
               
               {/* Email Field */}
               <div>
