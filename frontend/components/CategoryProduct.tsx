@@ -14,8 +14,8 @@ import AmountBeforeDiscountConverter from "@/lib/AmountBeforeDiscountConverter"
 
 function CategoryProduct() {
   return (
-    <Card className="h-72">
-      <div className="relative overflow-hidden w-full">
+    <Card className="h-fit w-fit">
+      <div className="relative overflow-hidden w-full h-52">
         <Image
           src={boatImage}
           alt="Featured product"

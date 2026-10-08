@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import { Toaster } from "sonner";
+import StoreProvider from "./storeProvider";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
@@ -31,7 +32,7 @@ export default function RootLayout({
     <html lang="en"
           className={cn("antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable)}>
       <body>
-      {children}
+      <StoreProvider>{children}</StoreProvider>
         <Toaster position="bottom-right" theme="dark" />
       </body>
     </html>

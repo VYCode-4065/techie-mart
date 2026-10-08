@@ -1,10 +1,9 @@
 
-import { Funnel, IndianRupee, ListSortAscending, Palette, Star } from 'lucide-react'
+import { Funnel, ListSortAscending } from 'lucide-react'
 import Link from 'next/link'
 import { ProductCategories, createCategorySlug } from '@/lib/product-categories'
-import Product from '@/components/Product';
 import CategoryProduct from '@/components/CategoryProduct';
-import Dropdown from '@/components/Dropdown';
+import FilterList from './FilterList';
 
 export default async function CategoryPage({
   params,
@@ -12,8 +11,6 @@ export default async function CategoryPage({
   params: Promise<{ categoryName: string }>;
 }) {
   const { categoryName } = await params
-
-  // const [openPrice,setOpenPrice] = useState<boolean>(false)
 
   return (
     <div className="grid grid-cols-12 w-full">
@@ -48,11 +45,7 @@ export default async function CategoryPage({
         <div className='w-full flex items-center justify-between'>
           <div className='py-2 flex items-center gap-5'>
             <h1 className='col-span-1 flex items-center gap-4 px-2 py-1 border rounded-sm w-fit h-fit bg-teal-500'>Filters <span><Funnel size={18}/></span></h1>
-            <ul className='flex items-center gap-3'>
-                <li  className='flex items-center gap-1 rounded-full px-1 py-0.5 hover:shadow-lg hover:shadow-teal-500 cursor-pointer duration-300 border'><IndianRupee size={16}/> By Price </li>
-                <li  className='flex items-center gap-1 rounded-full px-1 py-0.5 hover:shadow-lg hover:shadow-teal-500 cursor-pointer duration-300 border'><Star size={16}/> By Ratings </li>
-            </ul>
-            {<Dropdown/>}
+            <FilterList/>
         </div>
         <div className='flex items-center gap-1 shadow-lg rounded-full border px-2 py-0.5'>
           <p>Total Results :</p>
